@@ -1,7 +1,7 @@
 from typing import Any, Dict, Hashable, Tuple, List, Optional
 
 import linked_list
-from exception import KeyNotFoundError
+from i_lru.exception import KeyNotFoundError
 from . import EvictCallback, LinkedListElement
 from . import LruCacheInterface
 

@@ -1,5 +1,5 @@
 from threading import RLock
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Type
 
 from simple_lru import LruCacheInterface, EvictCallback
 from simple_lru.lru import LRU
@@ -7,7 +7,7 @@ from simple_lru.lru import LRU
 
 class Cache:
 
-    def __init__(self, size: int, on_evicted: Optional[EvictCallback] = None, lru_class: LruCacheInterface = LRU,
+    def __init__(self, size: int, on_evicted: Optional[EvictCallback] = None, lru_class: Type[LruCacheInterface] = LRU,
                  lock=RLock):
         self.lru = lru_class(size, on_evicted)
         self._lock = lock()
@@ -37,28 +37,29 @@ class Cache:
         return keys
 
 
-cache = Cache(5)
-cache.add(5, [1, 2, 3, 4, 5])
-print(cache.keys())
-cache.add(6, 1)
-print(cache.keys())
+if __name__ == '__main__':
+    cache = Cache(5)
+    cache.add(5, [1, 2, 3, 4, 5])
+    print(cache.keys())
+    cache.add(6, 1)
+    print(cache.keys())
 
-cache.add(11, 8)
-print(cache.keys())
-cache.add(12, 7)
-print(cache.keys())
-cache.add(5, 8)
-print(cache.keys())
-cache.add(11, 8)
-print(cache.keys())
-cache.add(19, 7)
-print(cache.keys())
-cache.add(17, 8)
-cache.add(18, 7)
-print(cache.keys())
-cache.add(12, 7)
+    cache.add(11, 8)
+    print(cache.keys())
+    cache.add(12, 7)
+    print(cache.keys())
+    cache.add(5, 8)
+    print(cache.keys())
+    cache.add(11, 8)
+    print(cache.keys())
+    cache.add(19, 7)
+    print(cache.keys())
+    cache.add(17, 8)
+    cache.add(18, 7)
+    print(cache.keys())
+    cache.add(12, 7)
 
-print(cache.keys())
-cache.add(5, 8)
-cache.add(21, 7)
-print(cache.keys())
+    print(cache.keys())
+    cache.add(5, 8)
+    cache.add(21, 7)
+    print(cache.keys())
