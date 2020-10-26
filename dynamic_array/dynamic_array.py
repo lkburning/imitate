@@ -72,7 +72,12 @@ class DynamicArray:
             self._low_array[i] = self._low_array[i + 1]
         self._low_array[self._n - 1] = 0
         self._n -= 1
+        self._cut_capacity()
         return pop_value
+
+    def _cut_capacity(self):
+        if self._n * 4 < self._capacity:
+            self._resize(ceil(self._capacity / 4))
 
     def __iter__(self) -> Any:
         for i in range(self._n):
@@ -183,3 +188,26 @@ class DynamicArray:
         if self.index(item) != -1:
             return True
         return False
+
+    def __gt__(self, other: 'DynamicArray') -> bool:
+        min_length = min(self._n, other._n)
+        for i in range(min_length):
+            if self[i] > other[i]:
+                return True
+            elif self[i] < other[j]:
+                return False
+        return True if self._n > other._n else False
+
+    def __lt__(self, other: 'DynamicArray') -> bool:
+        if self == other:
+            return False
+        return not self > other
+
+    def __le__(self, other: 'DynamicArray') -> bool:
+        return self < other or self == other
+
+    def __ge__(self, other: 'DynamicArray') -> bool:
+        return self > other or self == other
+
+    def __ne__(self, other: 'DynamicArray') -> bool:
+        return not self == other

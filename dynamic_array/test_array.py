@@ -90,6 +90,12 @@ class TestDynamicArray:
         array.append(3)
         array.remove(3)
         assert 3 in array and len(array) == 2
+        for i in range(100):
+            array.append(4)
+        for i in range(100):
+            array.remove(4)
+        assert 4 not in array and len(array) == 2
+        assert array._capacity == 8
 
     def test_count(self):
         array = DynamicArray()
