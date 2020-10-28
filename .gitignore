@@ -1,6 +1,7 @@
 # Pycharm Style
 .idea
 *.iml
+.coverage
 
 # python cache
 __pycache__
