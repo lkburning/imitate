@@ -323,6 +323,166 @@ class LinkedList:
     def __len__(self):
         return self._size
 
+    def insert(self, e: Any, position=0):
+        if position == self._size:
+            self.append(e)
+        elif position == 0:
+            self.push(e)
+        else:
+            real_position = self.real_position(position)
+            node = _Node(e, None)
+            tem = self._head
+            index = 0
+            while True:
+                if index == real_position:
+                    old_current_node = tem.next_node
+                    tem.next_node = node
+                    node.next_node = old_current_node
+                    break
+                index += 1
+            self._size += 1
+
+    def pop(self, position=0):
+        position = self.real_position(position)
+        tem = self._head
+        if self._size == 1:
+            self._tail = self._head = None
+        elif position == 0:
+            self._head = tem.next_node
+        else:
+            index = 0
+            while True:
+                index += 1
+                if index == position:
+                    current_node = tem.next_node
+                    tem.next_node = current_node.next_node
+                    if tem.next_node == None:
+                        self._tail = tem
+                    break
+                tem = tem.next_node
+
+        self._size -= 1
+
+    def real_position(self, position: int) -> int:
+        assert isinstance(position, int)
+        if position < 0:
+            result = self._size + position
+        else:
+            result = position
+        if 0 <= result < self._size:
+            return result
+        raise IndexError("Index illegal!")
+
+    def __getitem__(self, position: int) -> Any:
+        return self.get_position_node(position).element
+
+    def get_position_node(self, position: int) -> '_Node':
+        real_position = self.real_position(position)
+        start = 0
+        node = self._head
+
+        while start < real_position:
+            node = node.next_node
+            start += 1
+        return node
+
+    def rotate_right(self, k: int):
+        rotate_number = self._rotate_number(k)
+        # 第一种代码
+        # for _ in range(rotate_number):
+        #     self._rotate_right()
+
+        # 第二种代码
+        if not (rotate_number and self._size > 1):
+            return
+            # 找到需要被移动的节点
+        tem = self._head
+        index = 0
+        while True:
+            if index == (self._size - rotate_number - 1):
+                new_head = tem.next_node
+                tem.next_node = None
+                self._tail = tem
+                break
+            index += 1
+            tem = tem.next_node
+        old_head = self._head
+        self._head = old_head_last = new_head
+        while old_head_last.next_node:
+            old_head_last = old_head_last.next_node
+        old_head_last.next_node = old_head
+
+    def _rotate_number(self, k: int) -> int:
+        assert isinstance(k, int) and k >= 0
+        if self._size == 0:
+            return 0
+        return k % self._size
+
+    def _rotate_right(self):
+        if self._size <= 1:
+            return
+
+        # 最后一个node 成了 新的第一个节点
+        old_head = self._head
+        self._head = self._tail
+        self._tail.next_node = old_head
+
+        # 更新新的 tail
+        index = 0
+        while True:
+            if index == self._size - 2:
+                old_head.next_node = None
+                self._tail = old_head
+                break
+            old_head = old_head.next_node
+            index += 1
+
+    def rotate_left(self, k: int):
+        for _ in range(self._rotate_number(k)):
+            self._rotate_left()
+
+    def _rotate_left(self):
+        if self._size <= 1:
+            return
+        old_head = self._head
+        self._head = old_head.next_node
+        old_head.next_node = None
+        self._tail.next_node = old_head
+        self._tail = old_head
+
+    def reverse(self) -> 'LinkedList':
+        new_linked_list = LinkedList()
+        head = self._head
+        while head:
+            new_linked_list.insert(head.element)
+            head = head.next_node
+        return new_linked_list
+
+    def __add__(self, other: 'LinkedList') -> 'LinkedList':
+        """
+        Leetcode 445. 两数相加 II
+        """
+        short = other.reverse() if len(self) >= len(other) else self.reverse()
+        long = other.reverse() if len(self) < len(other) else self.reverse()
+        result = LinkedList()
+        start, stop = 0, max(len(short), len(long))
+        carry, current = 0, 0
+        short_node, long_node = short._head, long._head
+        while start < stop:
+            if start < len(short):
+                current = long_node.element + short_node.element + carry
+                short_node = short_node.next_node
+            else:
+                current = long_node.element +carry
+            carry = int(current / 10)
+            current = current % 10
+            long_node = long_node.next_node
+            start += 1
+            result.insert(current)
+        if carry == 1:
+            result.insert(1)
+        return result
+
 
 if __name__ == '__main__':
     # c = SinglyLinkedStack()
@@ -364,14 +524,32 @@ if __name__ == '__main__':
     # f.dequeue()
     # print('Circular Queue:', f)
     f = LinkedList()
+    f.append(7)
+    f.append(2)
+    f.append(4)
     f.append(3)
-    f.append(6)
-    f.append(8)
-    f.append(1)
-    f.append(9)
-    f.push(32)
+    # f.append(9)
+    # f.push(32)
     print(f)
-    f.sort()
-    print(f)
-    f.sort(reverse=False)
-    print(f)
+    e = LinkedList()
+    e.append(5)
+    e.append(6)
+    e.append(4)
+    print(e)
+    print(f +e)
+    # f.rotate_left(1)
+    # print(f)
+    # f.rotate_left(1)
+    # print(f)
+    # f.rotate_left(1)
+    # print(f)
+    # f.rotate_left(13)
+    # f.reverse()
+    # print(f)
+
+    # f.sort()
+    # print(f)
+    # f.pop(2)
+    # print(f)
+    # f.insert(2, 2)
+    # print(f)
