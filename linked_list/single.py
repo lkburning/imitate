@@ -473,7 +473,7 @@ class LinkedList:
                 current = long_node.element + short_node.element + carry
                 short_node = short_node.next_node
             else:
-                current = long_node.element +carry
+                current = long_node.element + carry
             carry = int(current / 10)
             current = current % 10
             long_node = long_node.next_node
@@ -482,6 +482,30 @@ class LinkedList:
         if carry == 1:
             result.insert(1)
         return result
+
+    def swap_pairs(self):
+        if self._size < 2:
+            return
+        prev: Optional['_Node'] = None
+        head = self._head
+        start = 1
+
+        while head.next_node:
+            if start % 2 == 1:
+                next = head.next_node
+                head.next_node = next.next_node
+                if start == 1:
+                    self._head = next
+                else:
+                    prev.next_node = next
+                next.next_node = head
+                prev = next
+            else:
+                prev = head
+                head = head.next_node
+            start += 1
+            if start == self._size:
+                self._tail = head
 
 
 if __name__ == '__main__':
@@ -528,15 +552,20 @@ if __name__ == '__main__':
     f.append(2)
     f.append(4)
     f.append(3)
-    # f.append(9)
-    # f.push(32)
+    # f.append(5)
     print(f)
-    e = LinkedList()
-    e.append(5)
-    e.append(6)
-    e.append(4)
-    print(e)
-    print(f +e)
+    f.swap_pairs()
+    print(f)
+    print(f._tail)
+    # # f.append(9)
+    # # f.push(32)
+    # print(f)
+    # e = LinkedList()
+    # e.append(5)
+    # e.append(6)
+    # e.append(4)
+    # print(e)
+    # print(f +e)
     # f.rotate_left(1)
     # print(f)
     # f.rotate_left(1)
