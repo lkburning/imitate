@@ -194,7 +194,7 @@ class DynamicArray:
         for i in range(min_length):
             if self[i] > other[i]:
                 return True
-            elif self[i] < other[j]:
+            elif self[i] < other[i]:
                 return False
         return True if self._n > other._n else False
 
